@@ -5,7 +5,7 @@ const addCommentBlog=asyncHandler(async(req,res)=>{
     const {name,email,comment,blog_id}=req.body;
     const defaultAction = 'not approved'; // Replace with your default action value
 
-    const sqlInsert = 'INSERT INTO commentBlog (name, email, comment, blog_id, action) VALUES (?, ?, ?, ?, ?)';
+    const sqlInsert = 'INSERT INTO commentblog (name, email, comment, blog_id, action) VALUES (?, ?, ?, ?, ?)';
     db.query(sqlInsert,[name,email,comment,blog_id,defaultAction
         
     ],(err,result)=>{
@@ -18,10 +18,10 @@ const addCommentBlog=asyncHandler(async(req,res)=>{
 const getCommentBlog = asyncHandler(async (req, res) => {
     // Fetch data from blog and department tables to return department name
     const sqlSelect = `
-       SELECT commentBlog.*,blog.title AS blog_name,
-        DATE_FORMAT(commentBlog.created_at, '%Y-%m-%d') AS created_date 
-        FROM commentBlog
-        JOIN blog ON commentBlog.blog_id = blog.id
+       SELECT commentblog.*,blog.title AS blog_name,
+        DATE_FORMAT(commentblog.created_at, '%Y-%m-%d') AS created_date 
+        FROM commentblog
+        JOIN blog ON commentblog.blog_id = blog.id
     `;
     
     db.query(sqlSelect, (err, result) => {
@@ -54,7 +54,7 @@ const updateActionCommentBlogs =asyncHandler(async(req,res)=>{
 })
 const deleteCommentBlog = asyncHandler(async (req, res) => {
     const {id}=req.params;
-    const sqlDelete = 'DELETE FROM commentBlog WHERE id =?';
+    const sqlDelete = 'DELETE FROM commentblog WHERE id =?';
     db.query(sqlDelete,[id],(err,result)=>{
         if(err){
             return res.json({message:err.message})
