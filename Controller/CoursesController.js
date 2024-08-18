@@ -813,6 +813,15 @@ const deleteCourse = asyncHandler(async (req, res) => {
         resolve(result);
       });
     });
+    await new Promise((resolve, reject) => {
+      db.query(`DELETE FROM payments WHERE course_id = ?`, [id], (err, result) => {
+        if (err) {
+          console.error("Error deleting payments:", err);
+          return reject(new Error("Database error during payments deletion"));
+        }
+        resolve(result);
+      });
+    });
     // Finally delete from courses
     await new Promise((resolve, reject) => {
       db.query(`DELETE FROM courses WHERE id = ?`, [id], (err, result) => {
@@ -832,7 +841,6 @@ const deleteCourse = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 
 
