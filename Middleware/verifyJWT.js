@@ -12,6 +12,10 @@ const img = req.file ? req.file.path : 'acc_icon.png'; // Default image path
   if (password !== confirmPassword) {
     return res.status(400).send('Passwords do not match');
   }
+  User.findByEmail(email, (err, user) => {
+    if (err) return res.status(500).send('Server error');
+    if (user) return res.status(400).send('Email already in use'); // Email already exists
+
   bcrypt.hash(password, 10, (err, hash) => {
     if (err) return res.status(500).send(err);
 
@@ -21,6 +25,7 @@ const img = req.file ? req.file.path : 'acc_icon.png'; // Default image path
       res.status(201).json({ message: 'User registered', id: userId, img: img });
     });
   });
+});
 };
 
 exports.login = (req, res) => {
