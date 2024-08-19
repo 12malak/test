@@ -1,9 +1,10 @@
 const express = require('express');
 const asyncHandler=require("../Middleware/asyncHandler.js")
 const db = require("../config.js");
-const { register, login } = require('../Middleware/verifyJWT');
+const { register, login, logout } = require('../Middleware/verifyJWT.js');
 const router = express.Router();
-const User = require('../Controller/UserController.js'); // Import UserController
+const User = require('../Controller/UserController.js'); 
+
 const multer = require("multer");
 const path = require("path");
 const storage = multer.diskStorage({
@@ -20,12 +21,8 @@ const upload = multer({
 
 router.post('/register',upload.single('img'), register);
 router.post('/login', login);
-
-
-// Define the delete route correctly
-router.delete('/delete/:id', User.deleteStudent);
-
-
+router.post('/logout',logout);
+router.delete('/delete/:id',User.deleteStudent);
 router.delete('/deleteadmin/:id', User.deleteAdmin);
 
 
@@ -39,7 +36,7 @@ router.get('/user/:id', (req, res) => {
   });
 
 router.get('/getusers',asyncHandler(async (req, res) => {
-   
+
         const sqlSelect = "SELECT * FROM users";
         db.query(sqlSelect, (err, result) => {
           if (err) {
