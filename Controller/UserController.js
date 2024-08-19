@@ -1,28 +1,48 @@
 const db = require("../config.js");
-
 const asyncHandler = require("../Middleware/asyncHandler.js");
 
 
 const User = {};
 
-User.create = (name, email, password, role,img, callback) => {
- 
-  const query = 'INSERT INTO users (name, email,  password, role, img) VALUES (?, ?, ?, ?, ?)';
-  db.execute(query, [name, email,  password, role, img], (err, result) => {
-    if (err) return callback(err);
-    callback(null, result);
-  });
-};
 
-User.findByEmail = (email, callback) => {
+User.create = async (name, email, password, role, img) => {
+  const query = 'INSERT INTO users (name, email, password, role, img) VALUES (?, ?, ?, ?, ?)';
+  return new Promise((resolve, reject) => {
+    db.execute(query, [name || null, email || null, password || null, role || null, img || null], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+User.findByEmail = (email) => {
   const query = 'SELECT * FROM users WHERE email = ?';
-  db.execute(query, [email], (err, result) => {
-    if (err) return callback(err);
-    callback(null, result[0]);
+  return new Promise((resolve, reject) => {
+    db.execute(query, [email], (err, result) => {
+      if (err) return reject(err);
+      resolve(result[0]);
+    });
+  });
+}
+// Increment device count
+User.incrementDeviceCount = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query('UPDATE users SET device_count = device_count + 1 WHERE id = ?', [userId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
   });
 };
 
-
+// Decrement device count
+User.decrementDeviceCount = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query('UPDATE users SET device_count = device_count - 1 WHERE id = ?', [userId], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
 
 
 
@@ -33,6 +53,14 @@ User.findById = (id, callback) => {
     callback(null, result[0]);
   });
 };
+
+
+
+
+// Function to delete a student and related records
+
+// delete****************************
+
 
 
 
@@ -137,5 +165,9 @@ User.deleteAdmin = asyncHandler(async (req, res) => {
   });
 });
 });
+
+
+
+
 
 module.exports = User;
