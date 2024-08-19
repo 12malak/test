@@ -49,7 +49,6 @@ const img = req.file ? req.file.path : 'acc_icon.png'; // Default image path
 //     });
 //   });
 // };
-const redisClient = require('./redisClient.js');
 const crypto = require('crypto')
 exports.login = (req, res) => {
   const { email, password } = req.body;
