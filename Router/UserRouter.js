@@ -22,6 +22,13 @@ router.post('/register',upload.single('img'), register);
 router.post('/login', login);
 
 
+// Define the delete route correctly
+router.delete('/delete/:id', User.deleteStudent);
+
+
+router.delete('/deleteadmin/:id', User.deleteAdmin);
+
+
 router.get('/user/:id', (req, res) => {
     const userId = req.params.id;
     User.findById(userId, (err, user) => {
